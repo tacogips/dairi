@@ -1,55 +1,58 @@
-mod db;
+mod config;
+
 mod process_manager;
+mod server;
 
-use std::path::PathBuf;
-
-#[derive(Debug)]
-pub enum Cmd {
-    Run,
-    Clear,
-    List,
-}
-
-impl Cmd {
-    pub fn try_from_str(s: &str) -> Result<Self, String> {
-        match s {
-            "run" => Ok(Self::Run),
-            "list" => Ok(Self::List),
-            "clear" => Ok(Self::Clear),
-            cmd => Err(format!("unknown cmd: {cmd}")),
-        }
-    }
-}
+use config::*;
+use thiserror::Error;
 
 const HELP: &str = "\
 dairi
 
+
 USAGE:
-  dairi [OPTIONS] [CMD]
+  dairi [OPTIONS]
 
 FLAGS:
   -h, --help            Prints help information
-OPTIONS:
-  --db path_to_db       database path
-ARGS:
-  <CMD> [run | clear | list]
 ";
 
-#[derive(Debug)]
-struct Args {
-    db_path: Option<PathBuf>,
-    command: Cmd,
+#[derive(Debug, Error)]
+pub enum DairiError {
+    #[error("{0}")]
+    ArgsError(#[from] pico_args::Error),
 }
+pub struct Args {}
 
+#[cfg(unix)]
 #[tokio::main]
 async fn main() {
-    let args = match parse_args() {
+    let _args = match parse_args() {
         Ok(args) => args,
         Err(e) => {
             eprintln!("args error : {}", e);
             std::process::exit(1);
         }
     };
+
+    tracing_subscriber::fmt::init();
+
+    let config = match Config::load_from_default_path_or_create() {
+        Ok(config) => config,
+        Err(e) => {
+            tracing::error!("{}", e);
+            std::process::exit(1);
+        }
+    };
+
+    if let Err(e) = process_manager::init_cmd_table(config.as_cmd_table()) {
+        tracing::error!("failed to init cmd table:{:?}", e);
+        std::process::exit(1);
+    };
+
+    if let Err(e) = server::serve().await {
+        tracing::error!("dairi server error: {}", e);
+    }
 }
 
 fn parse_args() -> Result<Args, pico_args::Error> {
@@ -59,12 +62,10 @@ fn parse_args() -> Result<Args, pico_args::Error> {
         std::process::exit(0);
     }
 
-    Ok(Args {
-        db_path: pargs.opt_value_from_str("--db")?,
-        command: pargs.free_from_fn(parse_cmd)?,
-    })
+    Ok(Args {})
 }
 
-fn parse_cmd(s: &str) -> Result<Cmd, String> {
-    Cmd::try_from_str(s)
+#[cfg(not(unix))]
+fn main() {
+    println!("dairi run on unix domain socket")
 }

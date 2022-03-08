@@ -1,6 +1,6 @@
 ## dairi
 
-A neovim plugin that send cmd to background process(e.g. julia repl).
+A neovim plugin that send input to stdio of background process(e.g. julia repl).
 
 It's just Poc. Operation confirmed on only linux.
 

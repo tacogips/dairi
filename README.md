@@ -2,7 +2,8 @@
 
 A neovim plugin that send cmd to background process(e.g. julia repl).
 
-this repo's status is just Poc now.
+It's just Poc. Operation confirmed on only linux.
+
 
 ![preview](https://github.com/tacogips/dairi/blob/main/doc/dairi_preview.gif?raw=true)
 

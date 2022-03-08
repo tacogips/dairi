@@ -118,7 +118,6 @@ function M.run()
 	local filetype = bo.filetype
 	local cmd_name = get_cmd_by_filetype(filetype)
 	if cmd_name ~= nil then
-		--local cmd_name = "julia"
 		local input = get_buffer_contents(0)
 		local result = run_dairi_cmd(cmd_name, input)
 		local bufnr = create_result_buffer()

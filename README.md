@@ -9,7 +9,7 @@ It's just Poc. Operation confirmed on only linux.
 
 ## Why not quickrun?
 
-If you run some cmd, say, `using CSV` on julia via quick run, it takes bunch of time to compile it each time. it's such annoying overhead if you like write on neovim and eval it iteration, rather than on julia repl or jupyter notebook.
+If you run some cmd, say, `using CSV` on julia via quick run, it takes bunch of time to compile it each time. there are such annoying overheads if you like write on neovim and eval it iteration, rather than on julia repl or jupyter notebook.
 
 ## Dependencies
 - rust (cargo) >= 1.58

@@ -2,7 +2,7 @@
 
 A neovim plugin that send input to stdio of background process(e.g. julia repl).
 
-It's just Poc. Operation confirmed on only linux.
+It's state of PoC now . Operation confirmed on only linux.
 
 
 ![preview](https://github.com/tacogips/dairi/blob/main/doc/dairi_preview.gif?raw=true)
@@ -47,7 +47,7 @@ wait_output_timeout_milli_sec = 500
 ### setup on neovim(lua)
 
 ```lua
--- cmd table is { file_type = cmd_name}
+-- cmd table reposerents { file_type = cmd_name}
 require("dairi_run").setup({
   cmds = {
      julia = "julia",

@@ -5,7 +5,7 @@ local fn = vim.fn
 
 local dairi_client = require("dairi")
 
-M = {}
+local M = {}
 
 local config = {
 	cmds = {

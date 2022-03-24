@@ -114,18 +114,21 @@ function M.close_window_if_exists()
 	close_window_if_exists()
 end
 
-function M.run()
+function M.run(no_output)
 	local filetype = bo.filetype
 	local cmd_name = get_cmd_by_filetype(filetype)
 	if cmd_name ~= nil then
 		local input = get_buffer_contents(0)
 		local result = run_dairi_cmd(cmd_name, input)
-		local bufnr = create_result_buffer()
-		get_buffer_contents(bufnr)
-		print("")
-		output_contents(bufnr, cmd_name, result)
+
+		if no_output ~= true then
+			local bufnr = create_result_buffer()
+			get_buffer_contents(bufnr)
+			output_contents(bufnr, cmd_name, result)
+		end
 	else
 		error("no cmd defined for ft:[" .. filetype .. "]")
 	end
 end
+
 return M
